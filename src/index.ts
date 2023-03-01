@@ -18,10 +18,35 @@ window.Webflow.push(() => {
     //updating the year
     fetchData().then((datapoints) => {
       const year = datapoints.tvl.map(function (index) {
-        return index.date;
+        // Extract the timestamp and convert it to a Date object
+        const timestamp = index.date;
+        const date = new Date(timestamp * 1000);
+
+        // Extract the month, day, and year components of the date and format them as a string in the standard US format (MM/DD/YYYY)
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const year = date.getFullYear();
+        const formattedDate = `${month}/${day}/${year}`;
+
+        // Return the formatted date string
+        return formattedDate;
       });
       //updating the totalLiquidityUSD
       const count = datapoints.tvl.map(function (index) {
+        // Convert the totalLiquidityUSD value to millions or billions and round the result to two decimal places
+
+        const { totalLiquidityUSD } = index;
+        const million = 1000000;
+        const billion = 1000000000;
+        let formattedValue;
+        if (totalLiquidityUSD >= billion) {
+          formattedValue = (totalLiquidityUSD / billion).toFixed(2) + 'B';
+        } else if (totalLiquidityUSD >= million) {
+          formattedValue = (totalLiquidityUSD / million).toFixed(2) + 'M';
+        } else {
+          formattedValue = totalLiquidityUSD.toFixed(2);
+        }
+        //return formattedValue; for the converion above but it doesn't seem to be working at this point.
         return index.totalLiquidityUSD;
       });
       console.log(year);
@@ -37,7 +62,7 @@ window.Webflow.push(() => {
   //Calls the function above
   updateChart();
 
-  //chart data
+  //chart dummy data. new data is passed in using function below
   const data = [
     { year: 2010, count: 10 },
     { year: 2011, count: 20 },
@@ -56,7 +81,7 @@ window.Webflow.push(() => {
       labels: data.map((row) => row.year),
       datasets: [
         {
-          label: 'Historical TVL of AAVE',
+          label: 'Historical TVL',
           data: data.map((row) => row.count),
           borderWidth: 1,
         },
