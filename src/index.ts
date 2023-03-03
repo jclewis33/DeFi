@@ -1,11 +1,12 @@
+//auto pulls entire chart, reduce to needed components when in use
 import Chart from 'chart.js/auto';
-
+//entire code block is wrapped in initial function to push to webflow
 window.Webflow ||= [];
 window.Webflow.push(() => {
   // Fetch Block
   function updateChart() {
     async function fetchData() {
-      const url = 'https://api.llama.fi/protocol/aave';
+      const url = 'https://api.llama.fi/charts';
       const response = await fetch(url);
       //wait until the request has been completed
       const datapoints = await response.json();
@@ -17,7 +18,7 @@ window.Webflow.push(() => {
     //we are using the information from the datapoints in the api to update the values of the chart
     //updating the year
     fetchData().then((datapoints) => {
-      const year = datapoints.tvl.map(function (index) {
+      const year = datapoints.map(function (index) {
         // Extract the timestamp and convert it to a Date object
         const timestamp = index.date;
         const date = new Date(timestamp * 1000);
@@ -32,21 +33,7 @@ window.Webflow.push(() => {
         return formattedDate;
       });
       //updating the totalLiquidityUSD
-      const count = datapoints.tvl.map(function (index) {
-        // Convert the totalLiquidityUSD value to millions or billions and round the result to two decimal places
-
-        const { totalLiquidityUSD } = index;
-        const million = 1000000;
-        const billion = 1000000000;
-        let formattedValue;
-        if (totalLiquidityUSD >= billion) {
-          formattedValue = (totalLiquidityUSD / billion).toFixed(2) + 'B';
-        } else if (totalLiquidityUSD >= million) {
-          formattedValue = (totalLiquidityUSD / million).toFixed(2) + 'M';
-        } else {
-          formattedValue = totalLiquidityUSD.toFixed(2);
-        }
-        //return formattedValue; for the converion above but it doesn't seem to be working at this point.
+      const count = datapoints.map(function (index) {
         return index.totalLiquidityUSD;
       });
       console.log(year);
@@ -62,20 +49,13 @@ window.Webflow.push(() => {
   //Calls the function above
   updateChart();
 
-  //chart dummy data. new data is passed in using function below
-  const data = [
-    { year: 2010, count: 10 },
-    { year: 2011, count: 20 },
-    { year: 2012, count: 15 },
-    { year: 2013, count: 25 },
-    { year: 2014, count: 22 },
-    { year: 2015, count: 45 },
-    { year: 2016, count: 28 },
-  ];
+  //chart dummy data, api data is passed in using function below data.map((row) => row.year)),
+  const data = [{ year: 2010, count: 10 }];
   const ctx = document.getElementById('myChart');
 
   //You must name the chart as a variable (const myChart) in order to pass information above from the api call to the datapoints on the chart
   const myChart = new Chart(ctx, {
+    //determines chart type
     type: 'line',
     data: {
       labels: data.map((row) => row.year),
@@ -83,7 +63,10 @@ window.Webflow.push(() => {
         {
           label: 'Historical TVL',
           data: data.map((row) => row.count),
-          borderWidth: 1,
+          fill: true,
+          borderColor: 'rgb(75, 35, 157)', //determines line color
+          tension: 0.1,
+          pointRadius: 0, // disable for all `'line'` datasets only draws line no points on the line
         },
       ],
     },
