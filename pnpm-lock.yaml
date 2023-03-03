@@ -10,6 +10,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.53.0
   '@typescript-eslint/parser': ^5.53.0
   chart.js: ^4.2.1
+  chartjs-plugin-datalabels: ^2.2.0
   cross-env: ^7.0.3
   esbuild: ^0.17.10
   eslint: ^8.34.0
@@ -22,6 +23,7 @@ specifiers:
 dependencies:
   '@finsweet/ts-utils': 0.38.0
   chart.js: 4.2.1
+  chartjs-plugin-datalabels: 2.2.0_chart.js@4.2.1
 
 devDependencies:
   '@changesets/changelog-git': 0.1.14
@@ -904,6 +906,14 @@ packages:
     engines: {pnpm: ^7.0.0}
     dependencies:
       '@kurkle/color': 0.3.2
+    dev: false
+
+  /chartjs-plugin-datalabels/2.2.0_chart.js@4.2.1:
+    resolution: {integrity: sha512-14ZU30lH7n89oq+A4bWaJPnAG8a7ZTk7dKf48YAzMvJjQtjrgg5Dpk9f+LbjCF6bpx3RAGTeL13IXpKQYyRvlw==}
+    peerDependencies:
+      chart.js: '>=3.0.0'
+    dependencies:
+      chart.js: 4.2.1
     dev: false
 
   /ci-info/3.7.1:

@@ -1,5 +1,28 @@
+import {
+  CategoryScale,
+  Chart,
+  Colors,
+  Legend,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip,
+} from 'chart.js';
+
+Chart.register(
+  LineController,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Colors,
+  Tooltip,
+  Legend
+);
+
 //auto pulls entire chart, reduce to needed components when in use
-import Chart from 'chart.js/auto';
+//import Chart from 'chart.js/auto';
 //entire code block is wrapped in initial function to push to webflow
 window.Webflow ||= [];
 window.Webflow.push(() => {
@@ -11,7 +34,7 @@ window.Webflow.push(() => {
       //wait until the request has been completed
       const datapoints = await response.json();
       //console.log the datapoints to make sure it is calling the api
-      console.log(datapoints);
+      // console.log(datapoints);
       //saves the datapoints for futher use
       return datapoints;
     }
@@ -36,8 +59,8 @@ window.Webflow.push(() => {
       const count = datapoints.map(function (index) {
         return index.totalLiquidityUSD;
       });
-      console.log(year);
-      console.log(count);
+      // console.log(year);
+      // console.log(count);
       //updates the chart with the datapoints above. myChart is pulled from the variable below.
       myChart.config.data.labels = year;
       //Define datasets as an array [0]and then the property you want to change
@@ -63,9 +86,10 @@ window.Webflow.push(() => {
         {
           label: 'Historical TVL',
           data: data.map((row) => row.count),
-          fill: true,
+          backgroundColor: 'rgb(75, 35, 157)', //determines background color
           borderColor: 'rgb(75, 35, 157)', //determines line color
-          tension: 0.1,
+          tension: 0.4,
+          fill: false, //determines whether there is a fill or not
           pointRadius: 0, // disable for all `'line'` datasets only draws line no points on the line
         },
       ],
@@ -74,6 +98,26 @@ window.Webflow.push(() => {
       scales: {
         y: {
           beginAtZero: true,
+          ticks: {
+            maxTicksLimit: 8,
+            callback: function (value, index, values) {
+              if (value >= 1000000000) {
+                return (value / 1000000000).toFixed(1) + ' B';
+              }
+              if (value >= 1000000) {
+                return (value / 1000000).toFixed(1) + ' M';
+              }
+              if (value >= 1000) {
+                return (value / 1000).toFixed(1) + ' K';
+              }
+              return value;
+            },
+          },
+        },
+        x: {
+          ticks: {
+            maxTicksLimit: 12,
+          },
         },
       },
     },
