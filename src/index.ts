@@ -1,4 +1,4 @@
-import {
+/*import {
   CategoryScale,
   Chart,
   Colors,
@@ -19,10 +19,10 @@ Chart.register(
   Colors,
   Tooltip,
   Legend
-);
+);*/
 
 //auto pulls entire chart, reduce to needed components when in use
-//import Chart from 'chart.js/auto';
+import Chart from 'chart.js/auto';
 //entire code block is wrapped in initial function to push to webflow
 window.Webflow ||= [];
 window.Webflow.push(() => {
